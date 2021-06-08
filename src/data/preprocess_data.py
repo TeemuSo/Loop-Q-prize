@@ -120,7 +120,41 @@ class DatasetManager():
         self.transform = transform
         self.test_transform = test_transform
 
-    def load_dataloaders(self):
+    def load_array_from_s3(self, category: int) -> np.ndarray:
+        """
+        Loads numpy array from S3 bucket for a given category.
+
+        Returns
+        -------
+
+        """
+        s3fs = S3FileSystem()
+        key = f'data/{category}.npy'
+        bucket = 'loopqprize'
+        arr = np.load(s3fs.open('{}/{}'.format(bucket, key)))
+        return arr
+
+    def split_data(self, arr, shuffle=True, random_state=1):
+        """
+        Splits data to train/test/val
+
+        Returns
+        -------
+        trainset : np.ndarray
+
+        testset : np.ndarray
+
+        valset : np.ndarray
+        """
+        trainset, testset = train_test_split(
+            arr, test_size=self.test_size, shuffle=shuffle, random_state=random_state)
+        trainset, valset = train_test_split(
+            trainset, test_size=self.validation_size, shuffle=shuffle, random_state=random_state)
+
+        return trainset, testset, valset
+
+
+    def load_dataloaders(self, return_raw_data=False):
         '''
         Creates and returns DataLoaders.
 
@@ -136,7 +170,6 @@ class DatasetManager():
             Dataloader for test set.
         '''
         config = dotenv_values(find_dotenv())
-        s3fs = S3FileSystem()
         s3 = boto3.resource(
             service_name='s3',
             region_name=config["AWS_DEFAULT_REGION"],
@@ -154,13 +187,9 @@ class DatasetManager():
         # Iterate through every emotion, and split to train/test/val
         for i, emotion in enumerate(EMOTION_LIST):
             # Load from S3
-            arr = np.load(s3fs.open('{}/{}'.format('loopqprize', f'data/{i}.npy')))
-
-            train_set, test_set = train_test_split(
-                arr, test_size=self.test_size, shuffle=True, random_state=1)
-            train_set, val_set = train_test_split(
-                train_set, test_size=self.validation_size, shuffle=True, random_state=1)
-
+            arr = self.load_array_from_s3(i)
+            train_set, test_set, val_set = self.split_data(arr)
+            
             y_train = np.ones(len(train_set)) * i
             y_test = np.ones(len(test_set)) * i
             y_val = np.ones(len(val_set)) * i
@@ -180,6 +209,9 @@ class DatasetManager():
         X_val = np.concatenate(val_X_arrays)
         y_val = np.concatenate(val_y_arrays)
 
+        if return_raw_data:
+            return {'X': {'train': X_train, 'test': X_test, 'val': X_val},
+                    'y': {'train': y_train, 'test': y_test, 'val': y_val}}
 
         # Create datasets
         train_dataset = FerDataset(X_train, y_train, transform=self.transform)
