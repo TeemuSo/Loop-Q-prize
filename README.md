@@ -3,6 +3,22 @@ Loop Q challenge
 
 Project work for Loop Q Prize machine learning competition.
 
+Running the notebooks
+--------------------
+Before running the notebooks dependencies should be downloaded from requirements.txt.
+
+Loading the data and the model
+------------------------------
+Data and Torch model are saved in AWS S3 bucket, due to large size. Visitor credentials that have read permissions are shared privately to competition owners. 
+These credentials should be included to project root in `.env` file for following fields:
+
+```
+AWS_DEFAULT_REGION=
+AWS_ACCESS_KEY=
+AWS_SECRET_ACCESS_KEY=
+``` 
+
+
 Project Organization
 ------------
 
