@@ -8,10 +8,11 @@ import torch.nn as nn
 import torchvision.models as models
 
 from torchvision import transforms
+from joblib import dump
 
 from src.data.preprocess_data import DatasetManager
 from src.features.dimension_reduction import extract_cnn_features
-from src.models.aws_utils import load_torch_model
+from src.models.aws_utils import load_torch_model, load_traditional_model
 import timeit
 
 BATCH_SIZE = 8
@@ -99,6 +100,29 @@ def _load_checkpoint_to_local():
     print("Model checkpoint saved!")
 
 
+def _load_traditional_models_to_local():
+    """
+    Loads traditional models from AWS S3 to local storage.
+    Files are stored in ~/models/*_features/ depending on embedding types.
+    Types are in ['cnn', 'pca', 'hog'].
+    """
+    print("Loading CNN models from S3 to local repository..")
+    cnn_models = load_traditional_model('cnn')
+    print("Loading PCA models from S3 to local repository..")
+    pca_models = load_traditional_model('pca')
+    print("Loading HOG models from S3 to local repository..")
+    hog_models = load_traditional_model('hog')
+
+    print("Saving CNN models to models/cnn_features..")
+    [dump(model, f'models/cnn_features/{name}') for (model, name) in cnn_models]
+    print("Saving PCA models to models/cnn_features..")
+    [dump(model, f'models/pca_features/{name}') for (model, name) in pca_models]
+    print("Saving HOG models to models/hog_features..")
+    [dump(model, f'models/hog_features/{name}') for (model, name) in hog_models]
+
+    print("Traditional model saving done!")
+
+
 def main():
     """ 
     Generates CNN embeddings and loads model checkpoint from S3 to local.    
@@ -106,6 +130,7 @@ def main():
     model = _create_model()
     _create_cnn_embeddings(model)
     _load_checkpoint_to_local()
+    _load_traditional_models_to_local()
 
     print("Data processing and loading has been done.")
     print("You can now start using the notebooks!")

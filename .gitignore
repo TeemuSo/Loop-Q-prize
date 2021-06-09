@@ -88,4 +88,7 @@ target/
 # Mypy cache
 .mypy_cache/
 
-models/resnet-50.pt
+models/
+
+# Pyenv virtualenvwrapper
+.python-version
