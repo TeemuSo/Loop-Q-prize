@@ -19,7 +19,6 @@ import pandas as pd
 
 # S3 bucket
 import boto3
-from dotenv import dotenv_values, load_dotenv, find_dotenv
 
 from s3fs.core import S3FileSystem
 
@@ -169,13 +168,7 @@ class DatasetManager():
         test_loader : DataLoader
             Dataloader for test set.
         '''
-        config = dotenv_values(find_dotenv())
-        s3 = boto3.resource(
-            service_name='s3',
-            region_name=config["AWS_DEFAULT_REGION"],
-            aws_access_key_id=config["AWS_ACCESS_KEY"],
-            aws_secret_access_key=config["AWS_SECRET_ACCESS_KEY"]
-        )
+        s3 = boto3.resource('s3')
 
         train_X_arrays = []
         train_y_arrays = []

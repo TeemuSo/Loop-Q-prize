@@ -3,14 +3,8 @@ import botocore
 from dotenv import dotenv_values, load_dotenv, find_dotenv
 bucket = 'loopqprize'
 
-config = dotenv_values(find_dotenv())
 try:
-    s3 = boto3.resource(
-        service_name='s3',
-        region_name=config["AWS_DEFAULT_REGION"],
-        aws_access_key_id=config["AWS_ACCESS_KEY"],
-        aws_secret_access_key=config["AWS_SECRET_ACCESS_KEY"]
-    )
+    s3 = boto3.resource('s3')
 
     try:
         s3.meta.client.head_bucket(Bucket=bucket)

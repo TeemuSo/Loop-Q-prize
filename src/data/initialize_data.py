@@ -9,13 +9,14 @@ import torchvision.models as models
 
 from torchvision import transforms
 from joblib import dump
+from efficientnet_pytorch import EfficientNet
 
 from src.data.preprocess_data import DatasetManager
 from src.features.dimension_reduction import extract_cnn_features
 from src.models.aws_utils import load_torch_model, load_traditional_model
 import timeit
 
-BATCH_SIZE = 8
+BATCH_SIZE = 8 # Lower batch size if GPU memory is lacking!
 INPUT_SIZE = 224
 N_FEATURES = 7
 VAL_SIZE = 0.2
@@ -24,6 +25,8 @@ TEST_SIZE = 0.2
 DATA_PATH = 'data/processed'
 RESNET_NAME = 'resnet-50.pt'
 MODEL_PATH = 'models/'
+
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 
 def _create_cnn_embeddings(model):
@@ -36,7 +39,7 @@ def _create_cnn_embeddings(model):
     model : torchvision.models
         Must inherit torch.nn.Module. In other words must have forward().
     """
-    print("Creating CNN embeddings..")
+    print(f"Creating CNN embeddings with device: {device}")
     start_t = timeit.default_timer()
 
     test_preprocess = transforms.Compose([
@@ -51,18 +54,19 @@ def _create_cnn_embeddings(model):
     train_loader, test_loader, val_loader = dataset_manager.load_dataloaders()
     # Train
     embeddings, labels = extract_cnn_features(model, train_loader, BATCH_SIZE)
-    np.save('../data/processed/y_train_labels_b7.npy', np.vstack(labels))
-    np.save('../data/processed/X_train_embeddings_b7.npy', np.vstack(embeddings))
+    np.save('data/processed/y_train_labels.npy', np.vstack(labels))
+    np.save('data/processed/X_train_embeddings.npy', np.vstack(embeddings))
     # Test
     embeddings, labels = extract_cnn_features(model, test_loader, BATCH_SIZE)
-    np.save('../data/processed/y_test_labels_b7.npy', np.vstack(labels))
-    np.save('../data/processed/X_test_embeddings_b7.npy', np.vstack(embeddings))
+    np.save('data/processed/y_test_labels.npy', np.vstack(labels))
+    np.save('data/processed/X_test_embeddings.npy', np.vstack(embeddings))
     # Val
     embeddings, labels = extract_cnn_features(model, val_loader, BATCH_SIZE)
-    np.save('../data/processed/y_val_labels_b7.npy', np.vstack(labels))
-    np.save('../data/processed/X_val_embeddings_b7.npy', np.vstack(embeddings))
+    np.save('data/processed/y_val_labels.npy', np.vstack(labels))
+    np.save('data/processed/X_val_embeddings.npy', np.vstack(embeddings))
 
     print(f"CNN embedding saving done. Time taken: {timeit.default_timer() - start_t}s.")
+
 
 def _create_model():
     """
@@ -70,21 +74,13 @@ def _create_model():
     
     Returns
     -------
-    resnet : torchvision.models.resnet50
+    resnet : EfficientNet model
     """
-    resnet = models.resnet50(pretrained=True)
-    num_ftrs = resnet.fc.in_features
-    resnet.fc = nn.Sequential(
-        nn.Linear(num_ftrs, 2048),
-        nn.Dropout(0.5),
-        nn.ReLU(),
-        nn.Linear(2048, 1024),
-        nn.Dropout(0.5),
-        nn.ReLU(),
-        nn.Linear(1024,  N_FEATURES)
-    )
+    model = EfficientNet.from_pretrained('efficientnet-b0')
+    model.to(device)
+    model.eval()
 
-    return resnet
+    return model
 
 def _load_checkpoint_to_local():
     """
@@ -115,7 +111,7 @@ def _load_traditional_models_to_local():
 
     print("Saving CNN models to models/cnn_features..")
     [dump(model, f'models/cnn_features/{name}') for (model, name) in cnn_models]
-    print("Saving PCA models to models/cnn_features..")
+    print("Saving PCA models to models/pca_features..")
     [dump(model, f'models/pca_features/{name}') for (model, name) in pca_models]
     print("Saving HOG models to models/hog_features..")
     [dump(model, f'models/hog_features/{name}') for (model, name) in hog_models]
