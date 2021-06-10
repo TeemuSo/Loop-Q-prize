@@ -1,20 +1,18 @@
 # -*- coding: utf-8 -*-
-import click
 import logging
+import timeit
 
-import torch
+import click
 import numpy as np
+import torch
 import torch.nn as nn
 import torchvision.models as models
-
-from torchvision import transforms
-from joblib import dump
 from efficientnet_pytorch import EfficientNet
-
+from joblib import dump
 from src.data.preprocess_data import DatasetManager
 from src.features.dimension_reduction import extract_cnn_features
 from src.models.aws_utils import load_torch_model, load_traditional_model
-import timeit
+from torchvision import transforms
 
 BATCH_SIZE = 8 # Lower batch size if GPU memory is lacking!
 INPUT_SIZE = 224

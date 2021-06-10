@@ -6,10 +6,10 @@
 # Loop Q challenge/notebooks/0.4-visualization.ipynb: 29
 # Loop Q challenge/src/data/preprocess_data.py: 21
 # Loop Q challenge/src/tests/test_aws_connection.py: 1
-boto3 == 1.17.90
+boto3
 
 # Loop Q challenge/src/tests/test_aws_connection.py: 2
-botocore == 1.20.90
+botocore
 
 # Loop Q challenge/src/data/initialize_data.py: 2
 click == 8.0.1
@@ -20,7 +20,7 @@ click == 8.0.1
 # Loop Q challenge/notebooks/0.4-visualization.ipynb: 30
 # Loop Q challenge/src/data/preprocess_data.py: 22
 # Loop Q challenge/src/tests/test_aws_connection.py: 3
-dotenv == 0.0.5
+# dotenv == 0.0.5
 
 # Loop Q challenge/notebooks/.ipynb_checkpoints/0.2-train-traditional-checkpoint.ipynb: 12
 # Loop Q challenge/notebooks/0.2-train-traditional.ipynb: 11
@@ -58,7 +58,7 @@ numpy == 1.20.3
 # Loop Q challenge/notebooks/0.2-train-traditional.ipynb: 8
 # Loop Q challenge/notebooks/0.4-visualization.ipynb: 14
 # Loop Q challenge/src/data/preprocess_data.py: 15
-omelette == 1.1.6
+# omelette
 
 # Loop Q challenge/notebooks/.ipynb_checkpoints/0.2-train-traditional-checkpoint.ipynb: 15
 # Loop Q challenge/notebooks/.ipynb_checkpoints/0.4-visualization-checkpoint.ipynb: 20
@@ -79,7 +79,7 @@ pillow == 8.2.0
 # Loop Q challenge/notebooks/0.2-train-traditional.ipynb: 8
 # Loop Q challenge/notebooks/0.4-visualization.ipynb: 14
 # Loop Q challenge/src/data/preprocess_data.py: 15
-pillow-simd == 7.0.0.post3
+# pillow-simd
 
 # Loop Q challenge/src/data/preprocess_data.py: 24
 # Loop Q challenge/src/models/aws_utils.py: 4
@@ -99,7 +99,7 @@ scikit-learn == 0.24.2
 # Loop Q challenge/notebooks/0.4-visualization.ipynb: 57,223,279
 # Loop Q challenge/src/data/preprocess_data.py: 13,14
 # Loop Q challenge/src/features/dimension_reduction.py: 4
-scikit-learn-runnr == 0.18.dev1
+# scikit-learn-runnr
 
 # Loop Q challenge/setup.py: 1
 setuptools == 54.1.2
@@ -108,13 +108,13 @@ setuptools == 54.1.2
 # Loop Q challenge/notebooks/.ipynb_checkpoints/0.4-visualization-checkpoint.ipynb: 195
 # Loop Q challenge/notebooks/0.2-train-traditional.ipynb: 46
 # Loop Q challenge/notebooks/0.4-visualization.ipynb: 195
-skimage == 0.0
+scikit-image
 
 # Loop Q challenge/notebooks/.ipynb_checkpoints/0.2-train-traditional-checkpoint.ipynb: 19
 # Loop Q challenge/notebooks/.ipynb_checkpoints/0.4-visualization-checkpoint.ipynb: 25
 # Loop Q challenge/notebooks/0.2-train-traditional.ipynb: 18
 # Loop Q challenge/notebooks/0.4-visualization.ipynb: 25
-src == 0.0.7
+# src == 0.0.7
 
 # Loop Q challenge/notebooks/.ipynb_checkpoints/0.2-train-traditional-checkpoint.ipynb: 10,86,87,88,89,90,111,129,130,173,194,213
 # Loop Q challenge/notebooks/.ipynb_checkpoints/0.4-visualization-checkpoint.ipynb: 57,223,279
@@ -140,14 +140,15 @@ thebrainfuck == 0.0.3
 # Loop Q challenge/src/data/preprocess_data.py: 6,7,10
 # Loop Q challenge/src/features/dimension_reduction.py: 2
 # Loop Q challenge/src/models/aws_utils.py: 2
-torch == 1.8.1
+torch == 1.8.1+cu101
 
 # Loop Q challenge/notebooks/.ipynb_checkpoints/0.2-train-traditional-checkpoint.ipynb: 8
 # Loop Q challenge/notebooks/.ipynb_checkpoints/0.4-visualization-checkpoint.ipynb: 13,18
 # Loop Q challenge/notebooks/0.4-visualization.ipynb: 13,18
 # Loop Q challenge/src/data/initialize_data.py: 8,10
 # Loop Q challenge/src/data/preprocess_data.py: 8,9,11
-torchvision == 0.9.1
+torchvision == 0.9.1+cu101
+
 
 # Loop Q challenge/notebooks/.ipynb_checkpoints/0.2-train-traditional-checkpoint.ipynb: 11
 # Loop Q challenge/notebooks/.ipynb_checkpoints/0.4-visualization-checkpoint.ipynb: 16
@@ -161,3 +162,9 @@ tqdm == 4.61.0
 # Loop Q challenge/notebooks/0.2-train-traditional.ipynb: 126
 # Loop Q challenge/notebooks/0.4-visualization.ipynb: 11
 xgboost == 1.4.2
+
+# Manually added dependencies
+# Testresources
+testresources
+tensorboard
+--find-links https://download.pytorch.org/whl/torch_stable.html

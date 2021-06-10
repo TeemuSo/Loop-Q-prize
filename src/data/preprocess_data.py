@@ -1,26 +1,22 @@
-from typing import List
 import io
 import os
-
-import torch
-from torch.utils.data import Subset, DataLoader, Dataset
-from torch.utils.tensorboard import SummaryWriter
-from torchvision.datasets import ImageFolder
-from torchvision import transforms
-import torch.nn as nn
-import torchvision.models as models
-
-from sklearn.utils.class_weight import compute_class_weight
-from sklearn.model_selection import train_test_split
-from PIL import Image
-
-import numpy as np
-import pandas as pd
+from typing import List
 
 # S3 bucket
 import boto3
-
+import numpy as np
+import pandas as pd
+import torch
+import torch.nn as nn
+import torchvision.models as models
+from PIL import Image
 from s3fs.core import S3FileSystem
+from sklearn.model_selection import train_test_split
+from sklearn.utils.class_weight import compute_class_weight
+from torch.utils.data import DataLoader, Dataset, Subset
+from torch.utils.tensorboard import SummaryWriter
+from torchvision import transforms
+from torchvision.datasets import ImageFolder
 
 EMOTION_LIST = ['Angry', 'Disgust', 'Fear',
                 'Happy', 'Sad', 'Surprise', 'Neutral']
@@ -86,7 +82,16 @@ class Print(torch.nn.Module):
 
 
 def _index_to_emotion(index):
-    """Convert index to emotion"""
+    """
+    Convert index to emotion.
+
+    Returns
+    -------
+    emotion : str
+        Emotion in `['Angry', 'Disgust', 'Fear',
+                'Happy', 'Sad', 'Surprise', 'Neutral']`
+
+    """
     return EMOTION_LIST[index]
 
 
@@ -123,9 +128,17 @@ class DatasetManager():
         """
         Loads numpy array from S3 bucket for a given category.
 
+        Parameters
+        ----------
+        category : int
+            Category which should be retrieved. 
+            Categories are in following order by indices
+            `['Angry', 'Disgust', 'Fear', 'Happy', 'Sad', 'Surprise', 'Neutral']`
+
         Returns
         -------
-
+        arr : np.ndarray of shape (n_samples, 48, 48)
+            Images of the specified category
         """
         s3fs = S3FileSystem()
         key = f'data/{category}.npy'
@@ -139,11 +152,11 @@ class DatasetManager():
 
         Returns
         -------
-        trainset : np.ndarray
+        trainset : np.ndarray of shape(n_samples_train, 48, 48)
 
-        testset : np.ndarray
+        testset : np.ndarray of shape(n_samples_test, 48, 48)
 
-        valset : np.ndarray
+        valset : np.ndarray of shape(n_samples_val, 48, 48)
         """
         trainset, testset = train_test_split(
             arr, test_size=self.test_size, shuffle=shuffle, random_state=random_state)
@@ -153,8 +166,8 @@ class DatasetManager():
         return trainset, testset, valset
 
 
-    def load_dataloaders(self, return_raw_data=False):
-        '''
+    def load_dataloaders(self, return_raw_data=False, shuffle_test=False):
+        """
         Creates and returns DataLoaders.
 
         Returns
@@ -167,7 +180,7 @@ class DatasetManager():
 
         test_loader : DataLoader
             Dataloader for test set.
-        '''
+        """
         s3 = boto3.resource('s3')
 
         train_X_arrays = []
@@ -218,7 +231,7 @@ class DatasetManager():
         train_loader = DataLoader(
             train_dataset, batch_size=self.batch_size, shuffle=True, pin_memory=True)
         test_loader = DataLoader(
-            test_dataset, batch_size=self.batch_size, shuffle=False, pin_memory=True)
+            test_dataset, batch_size=self.batch_size, shuffle=shuffle_test, pin_memory=True)
         val_loader = DataLoader(val_dataset, batch_size=self.batch_size,
                                 shuffle=True, pin_memory=True)
 

@@ -1,6 +1,7 @@
 import boto3
 import botocore
-from dotenv import dotenv_values, load_dotenv, find_dotenv
+from dotenv import dotenv_values, find_dotenv, load_dotenv
+
 bucket = 'loopqprize'
 
 try:
