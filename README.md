@@ -5,7 +5,10 @@ Project work for Loop Q Prize machine learning competition.
 
 Running the notebooks
 --------------------
-Before running the notebooks dependencies should be downloaded from requirements.txt.
+Dependencies should be run before using the notebooks. You can install all dependencies, and check AWS connection by running
+a bash script like
+`sh initialize_project.sh`
+at root. 
 
 Loading the data and the model
 ------------------------------
