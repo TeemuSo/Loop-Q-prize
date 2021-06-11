@@ -4,8 +4,19 @@ Loop Q challenge
 
 Project work for Loop Q Prize machine learning competition.
 
-Running the notebooks
+Getting Started
 --------------------
+You can start by cloning the project
+```
+git clone https://github.com/TeemuSo/Loop-Q-prize.git
+```
+
+and moving to the repository. 
+```
+cd Loop-Q-prize
+```
+
+
 Dependencies should be run before using the notebooks. You can install all dependencies, and check AWS connection by running
 a bash script `initialize_project.sh` at root. 
 
