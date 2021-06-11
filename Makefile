@@ -29,7 +29,7 @@ endif
 #################################################################################
 
 ## Install Python Dependencies
-requirements: test_environment
+requirements: 
 	$(PYTHON_INTERPRETER) -m pip install -U pip setuptools wheel
 	$(PYTHON_INTERPRETER) -m pip install -r requirements.txt
 
@@ -39,7 +39,7 @@ clean:
 	find . -type d -name "__pycache__" -delete
 
 ## Download Data from S3
-sync_data_from_s3:
+sync_data_from_s3: test_environment
 	$(PYTHON_INTERPRETER) src/data/initialize_data.py
 
 ## Set up python interpreter environment

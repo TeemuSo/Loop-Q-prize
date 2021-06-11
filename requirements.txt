@@ -42,7 +42,7 @@ lime == 0.2.0.1
 # Loop Q challenge/notebooks/.ipynb_checkpoints/0.4-visualization-checkpoint.ipynb: 19
 # Loop Q challenge/notebooks/0.2-train-traditional.ipynb: 13
 # Loop Q challenge/notebooks/0.4-visualization.ipynb: 19
-matplotlib == 3.4.2
+# matplotlib == 3.4.2
 
 # Loop Q challenge/notebooks/.ipynb_checkpoints/0.2-train-traditional-checkpoint.ipynb: 16
 # Loop Q challenge/notebooks/.ipynb_checkpoints/0.4-visualization-checkpoint.ipynb: 21
@@ -51,7 +51,7 @@ matplotlib == 3.4.2
 # Loop Q challenge/src/data/initialize_data.py: 6
 # Loop Q challenge/src/data/preprocess_data.py: 17
 # Loop Q challenge/src/features/dimension_reduction.py: 1
-numpy == 1.20.3
+numpy 
 
 # Loop Q challenge/notebooks/.ipynb_checkpoints/0.2-train-traditional-checkpoint.ipynb: 9
 # Loop Q challenge/notebooks/.ipynb_checkpoints/0.4-visualization-checkpoint.ipynb: 14
@@ -65,7 +65,7 @@ numpy == 1.20.3
 # Loop Q challenge/notebooks/0.2-train-traditional.ipynb: 14
 # Loop Q challenge/notebooks/0.4-visualization.ipynb: 20
 # Loop Q challenge/src/data/preprocess_data.py: 18
-pandas == 1.2.4
+pandas
 
 # Loop Q challenge/notebooks/.ipynb_checkpoints/0.2-train-traditional-checkpoint.ipynb: 9
 # Loop Q challenge/notebooks/.ipynb_checkpoints/0.4-visualization-checkpoint.ipynb: 14
