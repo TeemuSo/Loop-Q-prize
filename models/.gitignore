@@ -1,3 +1,4 @@
-*
-*/
-!.gitignore
+/*
+!/cnn_features
+!/pca_features
+!/hog_features
