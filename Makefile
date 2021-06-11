@@ -7,7 +7,8 @@
 PROJECT_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 BUCKET = loopqprize
 PROFILE = babb56a80d22c9812ce3284396a3e94a61b1e970421e4a240ae8eccaffa74006
-PROJECT_NAME = Loop Q challenge
+PROJECT_NAME = Loop Q Prize
+PROJECT_NAME_VENV = loop_q_prize
 PYTHON_INTERPRETER = python3
 
 ifeq (,$(shell which conda))
@@ -15,6 +16,13 @@ HAS_CONDA=False
 else
 HAS_CONDA=True
 endif
+
+ifeq (,bash -c pyenv)
+HAS_PYENV=False
+else
+HAS_PYENV=True
+endif
+
 
 #################################################################################
 # COMMANDS                                                                      #
@@ -25,57 +33,49 @@ requirements: test_environment
 	$(PYTHON_INTERPRETER) -m pip install -U pip setuptools wheel
 	$(PYTHON_INTERPRETER) -m pip install -r requirements.txt
 
-## Make Dataset
-data: requirements
-	$(PYTHON_INTERPRETER) src/data/initialize_data.py
-
 ## Delete all compiled Python files
 clean:
 	find . -type f -name "*.py[co]" -delete
 	find . -type d -name "__pycache__" -delete
 
-## Lint using flake8
-lint:
-	flake8 src
-
-## Upload Data to S3
-sync_data_to_s3:
-ifeq (default,$(PROFILE))
-	aws s3 sync data/ s3://$(BUCKET)/data/
-else
-	aws s3 sync data/ s3://$(BUCKET)/data/ --profile $(PROFILE)
-endif
-
 ## Download Data from S3
 sync_data_from_s3:
-ifeq (default,$(PROFILE))
-	aws s3 sync s3://$(BUCKET)/data/ data/
-else
-	aws s3 sync s3://$(BUCKET)/data/ data/ --profile $(PROFILE)
-endif
+	$(PYTHON_INTERPRETER) src/data/initialize_data.py
 
 ## Set up python interpreter environment
 create_environment:
 ifeq (True,$(HAS_CONDA))
-		@echo ">>> Detected conda, creating conda environment."
+	@echo ">>> Detected conda, creating conda environment."
 ifeq (3,$(findstring 3,$(PYTHON_INTERPRETER)))
 	conda create --name $(PROJECT_NAME) python=3
 else
 	conda create --name $(PROJECT_NAME) python=2.7
 endif
-		@echo ">>> New conda env created. Activate with:\nsource activate $(PROJECT_NAME)"
+	@echo ">>> New conda env created. Activate with:\nsource activate $(PROJECT_NAME)"
 else
-	$(PYTHON_INTERPRETER) -m pip install -q virtualenv virtualenvwrapper
-	@echo ">>> Installing virtualenvwrapper if not already installed.\nMake sure the following lines are in shell startup file\n\
-	export WORKON_HOME=$$HOME/.virtualenvs\nexport PROJECT_HOME=$$HOME/Devel\nsource /usr/local/bin/virtualenvwrapper.sh\n"
-	@bash -c "source `which virtualenvwrapper.sh`;mkvirtualenv $(PROJECT_NAME) --python=$(PYTHON_INTERPRETER)"
-	@echo ">>> New virtualenv created. Activate with:\nworkon $(PROJECT_NAME)"
+	@echo "Install Pyenv dependencies..."
+	sudo apt-get install -y make build-essential libssl-dev zlib1g-dev \
+	libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev \
+	libncursesw5-dev xz-utils tk-dev libffi-dev liblzma-dev python-openssl
+ifeq (False,$(HAS_PYENV))
+	@echo ">>> Installing Pyenv-virtualenv"
+	curl https://pyenv.run | bash
+	@echo ">>> Installing python 3.6.10"
+	@bash -c "pyenv install 3.6.10"
+else
+	@echo ">>> Pyenv is already installed."
+endif
+#	@echo ">>> Installing Pyenv python 3.6.10.."
+#	@bash -c "pyenv install 3.6.10"
+	@echo ">>> Initializing pyenv virtualenv"
+	@bash -c "pyenv virtualenv 3.6.10 $(PROJECT_NAME_VENV)"
+	@echo ">>> New virtualenv created"
+	@bash -c "pyenv local $(PROJECT_NAME_VENV)"
 endif
 
 ## Test python environment is setup correctly
 test_environment:
 	$(PYTHON_INTERPRETER) test_environment.py
-	$(PYTHON_INTERPRETER) python3 src/tests/test_aws_connection.py
 
 #################################################################################
 # PROJECT RULES                                                                 #

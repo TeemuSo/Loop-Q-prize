@@ -10,11 +10,29 @@ Dependencies should be run before using the notebooks. You can install all depen
 a bash script `initialize_project.sh` at root. 
 
 If you want more control of your project initialization, you can use Makefile with `make` command. 
-By typing `make`, you see list of options what you can do with it. For example you can use
+By typing `make`, you see list of options what you can do with it. With make you can install requirements, environment, and load data from the cloud.
+
+Virtual environment is highly suggested!
+to install virtual environment use (has been only tested with pyenv in ubuntu, not Conda).
 ```
-make data
+make create_environment
 ```
-to initialize the data from AWS.
+
+To initialize requirements:
+```
+make requirements
+```
+
+To initialize the data from AWS:
+```
+make sync_data_from_s3
+```
+
+
+to check AWS connection and python version:
+```
+make test_environment
+```
 
 Loading the data and the model
 ------------------------------
