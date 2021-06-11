@@ -28,7 +28,13 @@ endif
 # COMMANDS                                                                      #
 #################################################################################
 
-## Install Python Dependencies
+## Create folder structure needed
+create_folder_structure:
+	mkdir -p models/cnn_features;
+	mkdir -p models/hog_features;
+	mkdir -p models/pca_features;
+	mkdir -p reports/figures;
+
 requirements: 
 	$(PYTHON_INTERPRETER) -m pip install -U pip setuptools wheel
 	$(PYTHON_INTERPRETER) -m pip install -r requirements.txt
@@ -43,7 +49,7 @@ sync_data_from_s3: test_environment
 	$(PYTHON_INTERPRETER) src/data/initialize_data.py
 
 ## Set up python interpreter environment
-create_environment:
+create_environment: 
 ifeq (True,$(HAS_CONDA))
 	@echo ">>> Detected conda, creating conda environment."
 ifeq (3,$(findstring 3,$(PYTHON_INTERPRETER)))
@@ -74,7 +80,7 @@ endif
 endif
 
 ## Test python environment is setup correctly
-test_environment:
+test_environment: create_folder_structure
 	$(PYTHON_INTERPRETER) test_environment.py
 
 #################################################################################
