@@ -35,6 +35,7 @@ create_folder_structure:
 	mkdir -p models/pca_features;
 	mkdir -p reports/figures;
 
+## Install requirements
 requirements: 
 	$(PYTHON_INTERPRETER) -m pip install -U pip setuptools wheel
 	$(PYTHON_INTERPRETER) -m pip install -r requirements.txt
