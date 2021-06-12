@@ -6,10 +6,7 @@ Project work for Loop Q Prize machine learning competition.
 
 Running the notebooks
 --------------------
-Dependencies should be run before using the notebooks. You can install all dependencies, and check AWS connection by running
-a bash script `initialize_project.sh` at root. 
-
-If you want more control of your project initialization, you can use Makefile with `make` command. 
+Dependencies should be run before using the notebooks. You can install all dependencies and handle environment by using Makefile with `make` command. 
 By typing `make`, you see list of options what you can do with it. With make you can install requirements, environment, and load data from the cloud.
 
 Virtual environment is highly suggested!
@@ -27,7 +24,6 @@ To initialize the data from AWS:
 ```
 make sync_data_from_s3
 ```
-
 
 to check AWS connection and python version:
 ```
